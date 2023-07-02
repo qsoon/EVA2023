@@ -15,4 +15,4 @@ EVA 2023 Data Challenge consists of 4 sub-challenges, each of which deals with t
 - (C3) 3-dim joint probability prediction of exceedance events
 - (C4) 50-dim joint probability prediction of exceedance events
 
-To access more detailed information about the challenge, please refer to the "Instructions" folder.
+To access more detailed information about the challenge, please refer to the "instructions" folder.

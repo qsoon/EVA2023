@@ -55,6 +55,66 @@ calculate_SCV1 <- function(predfunc, tau0=1-1/60000, y, seed=1){
   return(res/l)
 }
 
+c2loss <- function(predfunc, tau, train, valid){
+  predictor <- predfunc(tau, train) # predfunc input = (tau, data)
+  if(0.99*quantile(valid, probs=tau)>predictor){
+    return(0.9*(0.99*quantile(valid, probs=tau) - predictor))
+  } 
+  else if(1.01*quantile(valid, probs=tau)<predictor){
+    return(0.1*(predictor-1.01*quantile(valid, probs=tau)))
+  }
+  else{
+    return(0)
+  }
+}
+
+
+calculate_loss1 <- function(predfunc, tau0=1-1/60000, y, seed=1){
+  n <- length(y)
+  res <- 0
+  alpha_list <- 2**c(0:floor(log(n^0.25,2)))
+  l <- length(alpha_list)
+  
+  scvlist <- list()
+  k_list <- c()
+  ind=1
+  for(alpha in alpha_list){
+    tauc <- tau0 - alpha / n
+    nc <- n / (1 + alpha/n/(1-tau0))
+    k <- floor(n/nc)
+    if(k==1){
+      l <- l-1
+      next
+    }
+    scvsum <- 0
+    set.seed(seed)
+    flds <- createFolds(1:n, k = k, list = TRUE, returnTrain = FALSE)
+    K <- k
+    if(k >= 4){
+      k_list <- c(k_list, k)
+      for(j in 1:k){
+        train_ind <- flds[[j]]
+        train <- y[train_ind]
+        valid <- y[-train_ind]
+        tmp <- c2loss(predfunc, tauc, train, valid)
+        if(is.na(tmp)){
+          K <- K-1
+          next
+        }
+        scvsum <- scvsum + tmp
+      }
+      if(K==0){
+        l <- l-1
+        next
+      }
+      scvlist[[ind]]<- scvsum/K
+      ind <- ind + 1
+    }
+  }
+  names(scvlist) <- k_list
+  return(scvlist)
+}
+
 # method 2
 calculate_SCV2 <- function(predfunc, tau0=1-1/60000, y, seed=1){
   n <- length(y)

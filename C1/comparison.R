@@ -387,65 +387,25 @@ calculate_cond_SCV1(TIR.EX.func.eva, tau0=1-1/10000, y=data2$Y, X=data2[,-1], se
 
 # Chernouchokov and Du (2006)
 calculate_cond_SCV1(GPD.EX.func1.eva, tau0=1-1/10000, y=data2$Y, X=as.matrix(data2[,-1]), seed=1) 
-calculate_cond_SCV1(GPD.EX.func1.eva, tau0=1-1/10000, y=data2$Y, X=as.matrix(data2[,-1]), seed=100) 
-calculate_cond_SCV1(GPD.EX.func1.eva, tau0=1-1/10000, y=data2$Y, X=as.matrix(data2[,-1]), seed=200) 
-calculate_cond_SCV1(GPD.EX.func1.eva, tau0=1-1/10000, y=data2$Y, X=as.matrix(data2[,-1]), seed=300) 
-
 calculate_cond_SCV2(GPD.EX.func1.eva, tau0=1-1/10000, y=data2$Y, X=as.matrix(data2[,-1]), seed=1)
-calculate_cond_SCV2(GPD.EX.func1.eva, tau0=1-1/10000, y=data2$Y, X=as.matrix(data2[,-1]), seed=100) 
-calculate_cond_SCV2(GPD.EX.func1.eva, tau0=1-1/10000, y=data2$Y, X=as.matrix(data2[,-1]), seed=200) 
-calculate_cond_SCV2(GPD.EX.func1.eva, tau0=1-1/10000, y=data2$Y, X=as.matrix(data2[,-1]), seed=300)
 
 calculate_cond_SCV1(GPD.EX.func1.eva, tau0=1-1/10000, y=data3$Y, X=as.matrix(data3[,-1]), seed=1) 
-calculate_cond_SCV1(GPD.EX.func1.eva, tau0=1-1/10000, y=data3$Y, X=as.matrix(data3[,-1]), seed=100) 
-calculate_cond_SCV1(GPD.EX.func1.eva, tau0=1-1/10000, y=data3$Y, X=as.matrix(data3[,-1]), seed=200) 
-calculate_cond_SCV1(GPD.EX.func1.eva, tau0=1-1/10000, y=data3$Y, X=as.matrix(data3[,-1]), seed=300) 
-
 calculate_cond_SCV2(GPD.EX.func1.eva, tau0=1-1/10000, y=data3$Y, X=as.matrix(data3[,-1]), seed=1) 
-calculate_cond_SCV2(GPD.EX.func1.eva, tau0=1-1/10000, y=data3$Y, X=as.matrix(data3[,-1]), seed=100) 
-calculate_cond_SCV2(GPD.EX.func1.eva, tau0=1-1/10000, y=data3$Y, X=as.matrix(data3[,-1]), seed=200) 
-calculate_cond_SCV2(GPD.EX.func1.eva, tau0=1-1/10000, y=data3$Y, X=as.matrix(data3[,-1]), seed=300) 
 
 # quantile regression
 calculate_cond_SCV1(qrfunc.eva, tau0=1-1/10000, data2$Y, data2[,-1], seed=1) 
-calculate_cond_SCV1(qrfunc.eva, tau0=1-1/10000, data2$Y, data2[,-1], seed=100) 
-calculate_cond_SCV1(qrfunc.eva, tau0=1-1/10000, data2$Y, data2[,-1], seed=200)
-calculate_cond_SCV1(qrfunc.eva, tau0=1-1/10000, data2$Y, data2[,-1], seed=300) 
-
 calculate_cond_SCV2(qrfunc.eva, tau0=1-1/10000, data2$Y, data2[,-1], seed=1) 
-calculate_cond_SCV2(qrfunc.eva, tau0=1-1/10000, data2$Y, data2[,-1], seed=100)
-calculate_cond_SCV2(qrfunc.eva, tau0=1-1/10000, data2$Y, data2[,-1], seed=200) 
-calculate_cond_SCV2(qrfunc.eva, tau0=1-1/10000, data2$Y, data2[,-1], seed=300) 
 
 calculate_cond_SCV1(qrfunc.eva, tau0=1-1/10000, data3$Y, data3[,-1], seed=1)
-calculate_cond_SCV1(qrfunc.eva, tau0=1-1/10000, data3$Y, data3[,-1], seed=100) 
-calculate_cond_SCV1(qrfunc.eva, tau0=1-1/10000, data3$Y, data3[,-1], seed=200)
-calculate_cond_SCV1(qrfunc.eva, tau0=1-1/10000, data3$Y, data3[,-1], seed=300) 
-
 calculate_cond_SCV2(qrfunc.eva, tau0=1-1/10000, data3$Y, data3[,-1], seed=1) 
-calculate_cond_SCV2(qrfunc.eva, tau0=1-1/10000, data3$Y, data3[,-1], seed=100) 
-calculate_cond_SCV2(qrfunc.eva, tau0=1-1/10000, data3$Y, data3[,-1], seed=200)
-calculate_cond_SCV2(qrfunc.eva, tau0=1-1/10000, data3$Y, data3[,-1], seed=300) 
-
 
 # QR
 calculate_cond_SCV1_kernel(qrfunc.eva, tau0=1-1/10000, data2$Y, data2[,-1], seed=1)
-calculate_cond_SCV1_kernel(qrfunc.eva, tau0=1-1/10000, data2$Y, data2[,-1], seed=100)
-calculate_cond_SCV2_kernel(qrfunc.eva, tau0=1-1/10000, data2$Y, data2[,-1], seed=1) 
-calculate_cond_SCV2_kernel(qrfunc.eva, tau0=1-1/10000, data2$Y, data2[,-1], seed=100)
-
 calculate_cond_SCV1_kernel(qrfunc.eva, tau0=1-1/10000, data3$Y, data3[,-1], seed=1)
-calculate_cond_SCV1_kernel(qrfunc.eva, tau0=1-1/10000, data3$Y, data3[,-1], seed=100) 
-calculate_cond_SCV2_kernel(qrfunc.eva, tau0=1-1/10000, data3$Y, data3[,-1], seed=1) 
-calculate_cond_SCV2_kernel(qrfunc.eva, tau0=1-1/10000, data3$Y, data3[,-1], seed=100) 
 
 # evgam
 calculate_cond_SCV1_kernel(evgam.eva, tau0=1-1/10000, data2$Y, data2[,-1], seed=1) 
-calculate_cond_SCV1_kernel(evgam.eva, tau0=1-1/10000, data2$Y, data2[,-1], seed=100) 
 calculate_cond_SCV2_kernel(evgam.eva, tau0=1-1/10000, data2$Y, data2[,-1], seed=1) 
-calculate_cond_SCV2_kernel(evgam.eva, tau0=1-1/10000, data2$Y, data2[,-1], seed=100) 
 
 calculate_cond_SCV1_kernel(evgam.eva, tau0=1-1/10000, data3$Y, data3[,-1], seed=1) 
-calculate_cond_SCV1_kernel(evgam.eva, tau0=1-1/10000, data3$Y, data3[,-1], seed=100) 
 calculate_cond_SCV2_kernel(evgam.eva, tau0=1-1/10000, data3$Y, data3[,-1], seed=1) 
-calculate_cond_SCV2_kernel(evgam.eva, tau0=1-1/10000, data3$Y, data3[,-1], seed=100) 

@@ -1,5 +1,7 @@
 library(Expectrem)
 library(extremefit)
+library(expint)
+
 ################
 CIextExpect.modify <- function (X, k = trunc(length(X)/10), tau, estim="Hill",method = "direct", 
                                 ci.level = 0.95) 
@@ -174,7 +176,7 @@ CIextExpect.modify <- function (X, k = trunc(length(X)/10), tau, estim="Hill",me
   }
 }
 
-
+# estimate extreme quantile using extreme expectile estimator (with C.I)
 CIextExpect.eva <- function(tau, train){
   res <- CIextExpect.modify(X=train, tau=tau, k="kopt")
   expect <- res$Point_estimate
@@ -256,7 +258,7 @@ extExpect.modify <- function (X, k = "kopt", tau, estim = "Hill", method = "dire
   }
 }
 
-
+# estimate extreme quantile using extreme expectile estimator
 extExpect.eva <- function(tau,train){
   # tail.ind <- lpindex(X=train,k=50,p=1.5,br=TRUE)
   # tail.ind <- tindexp(X=train, k=50,br=TRUE)
@@ -267,132 +269,219 @@ extExpect.eva <- function(tau,train){
 }
 
 
+# Weissman-type estimator for extreme quantiles
 extQuant.eva <- function(tau, train){
   return(extQuant(X=train, tau=tau, k=10, estim="tindexp", br=TRUE))
 }
 
-
+# Composite extreme quantile estimator
 extQuantlp.eva <- function(tau, train){
   return(extQuantlp(X=train,tau=tau,k=10,p=1.2,estim="lpindex",br=TRUE))
 }
 
+# R package extremefit
+# adaptive procedure described in Grama and Spokoiny (2008) and Durrieu et al. (2015)
 extremefit.eva <- function(tau, train){
   HH <- hill.adapt(train, weights=rep(1, length(train)), initprop = 0.1,
                    gridlen = 100 , r1 = 0.25, r2 = 0.05, CritVal=10)
   
   return(predict(HH, tau, type = "quantile")$y)
 }
+
+# refined Weibull (2023)
+hill <- function(x, k) {
+  x.order = sort(x)
+  n = length(x.order)
+  x.in = x.order[(n-k+1):n]
+  x.kn = x.order[n-k]*rep(1, length(x.in))
+  res = mean(log(x.in)-log(x.kn))
+  res
+}
+
+r.weissman <- function(x, k, alpha) {
+  x.order = sort(x)
+  n = length(x.order)
+  x.anchor = x.order[n-k+1]
+  
+  rho.beta = get_rho_beta(x.order) # second-order parameter
+  rho = rho.beta[[1]]
+  extrapolation.ratio = k/(alpha*n)
+  k.prime = k * ((-rho*log(extrapolation.ratio))/((1-rho)*(1-extrapolation.ratio^rho)))^(1/rho)
+  hill.evi = hill(x=x.order, k=ceiling(k.prime))
+  res = x.anchor*(extrapolation.ratio^hill.evi)
+  res 
+}
+
+hill.weibull <- function(x, k) {
+  x.order = sort(x)
+  n = length(x.order)
+  x.in = x.order[(n-k+1):n]
+  x.kn = x.order[n-k]*rep(1, length(x.in))
+  mu.n = 1 / (exp(log(n/k))*expint_E1(log(n/k)))
+  res = mu.n * mean(log(x.in)-log(x.kn))
+  res
+}
+
+r.weibull <- function(x, k, alpha) {
+  x.order = sort(x)
+  n = length(x.order)
+  x.anchor = x.order[n-k+1]
+  
+  rho.beta = get_rho_beta(x.order) # second-order parameter
+  rho = rho.beta[[1]]
+  extrapolation.ratio = log(1/alpha) / log(n/k)
+  beta.prime = extrapolation.ratio*log(extrapolation.ratio)/(extrapolation.ratio-1)
+  k.prime = n*(k/n)^beta.prime
+  rsh.evi = hill.weibull(x=x.order, k=ceiling(k.prime))
+  res = x.anchor*(extrapolation.ratio^rsh.evi)
+  res 
+}
+
+forest.k <- function(x, a=NULL, c=NULL, return.var=FALSE) {
+  if (is.null(a)) {
+    a = 13
+  } 
+  if (is.null(c)) {
+    c = as.integer(3*length(x)/4)
+  }
+  b = as.integer((c+a)/2)
+  
+  list.var = c()
+  finish = FALSE
+  
+  while (!finish) {
+    if ((b-a) < 2) {
+      finish = TRUE
+    } else {
+      v1 = var(x[(a+1):(b+1)])
+      v2 = var(x[(b+1):(c+1)])
+      if (v1 < v2) {
+        list.var = c(list.var, v1)
+        c = b
+      }  else {
+        list.var = c(list.var, v2)
+        a = b
+      }
+      b = as.integer((c+a)/2)
+    }
+  }
+  if (return.var) {
+    return(c(b, mean(list.var)))
+  }
+  return(b)
+}
+
+random.forest.k <- function(x, n.forests, seed=42) {
+  set.seed(seed)
+  A0 = 13
+  C0 = as.integer(3*length(x)/4)
+  
+  list.k = c()
+  for (i in 1:n.forests) {
+    a = sample(seq(A0, C0-1, by=1), size=1)
+    c = sample(seq(a+1, C0, by=1), size=1)
+    list.k = c(list.k, forest.k(x=x, a=a, c=c))
+  }
+  res = as.integer(median(list.k))
+  return(res)
+}
+
+estimate.rw <- function(tau, x) {
+  x.order = sort(x)
+  n = length(x.order)
+  anchor.points = seq(2, n-1, by=1)
+  
+  estim = c()
+  
+  for (i in 1:length(anchor.points)) {
+    anchor.point = anchor.points[i]
+    estim[i] = r.weissman(x=x.order, k=anchor.point, alpha=1-tau)
+  }
+  
+  bestK = random.forest.k(estim, n.forests = 10000, seed=42)
+  print(bestK)
+  res = estim[as.integer(bestK)]
+  res
+}
+
+estimate.rweibull <- function(tau, x) {
+  x.order = sort(x)
+  n = length(x.order)
+  anchor.points = seq(2, n-1, by=1)
+  
+  estim = c()
+  
+  for (i in 1:length(anchor.points)) {
+    anchor.point = anchor.points[i]
+    estim[i] = r.weibull(x=x.order, k=anchor.point, alpha=1-tau)
+  }
+  
+  bestK = random.forest.k(estim, n.forests = 10000, seed=42)
+  print(bestK)
+  res = estim[as.integer(bestK)]
+  res
+}
+
+
+
 ################
 source("evaluation.R")
+source("evt0.R")
 
 data <- read.csv("../data/Amaurot.csv")
-data[which(data$Season=="S1"),"Season"] <- 0
-data[which(data$Season=="S2"),"Season"] <- 1
-data$Season <- as.numeric(data$Season)
-
-data2 <- data[complete.cases(data),] # remove NA's 
-data3 <- data2[-which.max(data2$Y),] # remove max
+data3 <- data[-which.max(data$Y),] # remove max
 
 
 # Weissman-type estimator
-calculate_SCV1(extQuant.eva, tau0=1-1/60000, data2$Y, seed=1) 
-calculate_SCV1(extQuant.eva, tau0=1-1/60000, data2$Y, seed=100) 
-calculate_SCV1(extQuant.eva, tau0=1-1/60000, data2$Y, seed=200)
-calculate_SCV1(extQuant.eva, tau0=1-1/60000, data2$Y, seed=300) 
-
-calculate_SCV2(extQuant.eva, tau0=1-1/60000, data2$Y, seed=1) 
-calculate_SCV2(extQuant.eva, tau0=1-1/60000, data2$Y, seed=100)
-calculate_SCV2(extQuant.eva, tau0=1-1/60000, data2$Y, seed=200) 
-calculate_SCV2(extQuant.eva, tau0=1-1/60000, data2$Y, seed=300) 
+calculate_SCV1(extQuant.eva, tau0=1-1/60000, data$Y, seed=1) 
+calculate_SCV2(extQuant.eva, tau0=1-1/60000, data$Y, seed=1) 
 
 calculate_SCV1(extQuant.eva, tau0=1-1/60000, data3$Y, seed=1) 
-calculate_SCV1(extQuant.eva, tau0=1-1/60000, data3$Y, seed=100) 
-calculate_SCV1(extQuant.eva, tau0=1-1/60000, data3$Y, seed=200) 
-calculate_SCV1(extQuant.eva, tau0=1-1/60000, data3$Y, seed=300)
-
 calculate_SCV2(extQuant.eva, tau0=1-1/60000, data3$Y, seed=1) 
-calculate_SCV2(extQuant.eva, tau0=1-1/60000, data3$Y, seed=100)
-calculate_SCV2(extQuant.eva, tau0=1-1/60000, data3$Y, seed=200) 
-calculate_SCV2(extQuant.eva, tau0=1-1/60000, data3$Y, seed=300)
 
 # Composite extreme quantile estimation
-calculate_SCV1(extQuantlp.eva, tau0=1-1/60000, data2$Y, seed=1)
-calculate_SCV1(extQuantlp.eva, tau0=1-1/60000, data2$Y, seed=100)
-calculate_SCV1(extQuantlp.eva, tau0=1-1/60000, data2$Y, seed=200) 
-calculate_SCV1(extQuantlp.eva, tau0=1-1/60000, data2$Y, seed=300) 
-
-calculate_SCV2(extQuantlp.eva, tau0=1-1/60000, data2$Y, seed=1) 
-calculate_SCV2(extQuantlp.eva, tau0=1-1/60000, data2$Y, seed=100) 
-calculate_SCV2(extQuantlp.eva, tau0=1-1/60000, data2$Y, seed=200) 
-calculate_SCV2(extQuantlp.eva, tau0=1-1/60000, data2$Y, seed=300) 
+calculate_SCV1(extQuantlp.eva, tau0=1-1/60000, data$Y, seed=1)
+calculate_SCV2(extQuantlp.eva, tau0=1-1/60000, data$Y, seed=1) 
 
 calculate_SCV1(extQuantlp.eva, tau0=1-1/60000, data3$Y, seed=1) 
-calculate_SCV1(extQuantlp.eva, tau0=1-1/60000, data3$Y, seed=100) 
-calculate_SCV1(extQuantlp.eva, tau0=1-1/60000, data3$Y, seed=200) 
-calculate_SCV1(extQuantlp.eva, tau0=1-1/60000, data3$Y, seed=300)
-
 calculate_SCV2(extQuantlp.eva, tau0=1-1/60000, data3$Y, seed=1)
-calculate_SCV2(extQuantlp.eva, tau0=1-1/60000, data3$Y, seed=100) 
-calculate_SCV2(extQuantlp.eva, tau0=1-1/60000, data3$Y, seed=200) 
-calculate_SCV2(extQuantlp.eva, tau0=1-1/60000, data3$Y, seed=300) 
 
 # expectile
-calculate_SCV1(extExpect.eva, tau0=1-1/60000, data2$Y, seed=1)
-calculate_SCV1(extExpect.eva, tau0=1-1/60000, data2$Y, seed=100)
-calculate_SCV1(extExpect.eva, tau0=1-1/60000, data2$Y, seed=200) 
-calculate_SCV1(extExpect.eva, tau0=1-1/60000, data2$Y, seed=300) 
-
-calculate_SCV2(extExpect.eva, tau0=1-1/60000, data2$Y, seed=1)
-calculate_SCV2(extExpect.eva, tau0=1-1/60000, data2$Y, seed=100) 
-calculate_SCV2(extExpect.eva, tau0=1-1/60000, data2$Y, seed=200) 
-calculate_SCV2(extExpect.eva, tau0=1-1/60000, data2$Y, seed=300) 
+calculate_SCV1(extExpect.eva, tau0=1-1/60000, data$Y, seed=1)
+calculate_SCV2(extExpect.eva, tau0=1-1/60000, data$Y, seed=1)
 
 calculate_SCV1(extExpect.eva, tau0=1-1/60000, data3$Y, seed=1) 
-calculate_SCV1(extExpect.eva, tau0=1-1/60000, data3$Y, seed=100) 
-calculate_SCV1(extExpect.eva, tau0=1-1/60000, data3$Y, seed=200) 
-calculate_SCV1(extExpect.eva, tau0=1-1/60000, data3$Y, seed=300) 
-
 calculate_SCV2(extExpect.eva, tau0=1-1/60000, data3$Y, seed=1) 
-calculate_SCV2(extExpect.eva, tau0=1-1/60000, data3$Y, seed=100) 
-calculate_SCV2(extExpect.eva, tau0=1-1/60000, data3$Y, seed=200) 
-calculate_SCV2(extExpect.eva, tau0=1-1/60000, data3$Y, seed=300) 
 
 # extremefit
-calculate_SCV1(extremefit.eva, tau0=1-1/60000, data2$Y, seed=1) 
-calculate_SCV1(extremefit.eva, tau0=1-1/60000, data2$Y, seed=100) 
-calculate_SCV1(extremefit.eva, tau0=1-1/60000, data2$Y, seed=200) 
-calculate_SCV1(extremefit.eva, tau0=1-1/60000, data2$Y, seed=300) 
-
-calculate_SCV2(extremefit.eva, tau0=1-1/60000, data2$Y, seed=1) 
-calculate_SCV2(extremefit.eva, tau0=1-1/60000, data2$Y, seed=100)
-calculate_SCV2(extremefit.eva, tau0=1-1/60000, data2$Y, seed=200) 
-calculate_SCV2(extremefit.eva, tau0=1-1/60000, data2$Y, seed=300)
+calculate_SCV1(extremefit.eva, tau0=1-1/60000, data$Y, seed=1) 
+calculate_SCV2(extremefit.eva, tau0=1-1/60000, data$Y, seed=1) 
 
 calculate_SCV1(extremefit.eva, tau0=1-1/60000, data3$Y, seed=1) 
-calculate_SCV1(extremefit.eva, tau0=1-1/60000, data3$Y, seed=100) 
-calculate_SCV1(extremefit.eva, tau0=1-1/60000, data3$Y, seed=200)
-calculate_SCV1(extremefit.eva, tau0=1-1/60000, data3$Y, seed=300) 
-
 calculate_SCV2(extremefit.eva, tau0=1-1/60000, data3$Y, seed=1) 
-calculate_SCV2(extremefit.eva, tau0=1-1/60000, data3$Y, seed=100) 
-calculate_SCV2(extremefit.eva, tau0=1-1/60000, data3$Y, seed=200) 
-calculate_SCV2(extremefit.eva, tau0=1-1/60000, data3$Y, seed=300) 
+
 
 # test
 # Weissman-type estimator
-extQuant(X=data2$Y, tau=1-1/60000) 
+extQuant(X=data$Y, tau=1-1/60000) 
 extQuant(X=data3$Y, tau=1-1/60000) 
 
 # Composite extreme quantile estimation (selected, )
-extQuantlp(X=data2$Y,tau=1-1/60000,k=50,p=1.5,estim="lpindex",br=TRUE) 
+extQuantlp(X=data$Y,tau=1-1/60000,k=50,p=1.5,estim="lpindex",br=TRUE) 
 extQuantlp(X=data3$Y,tau=1-1/60000,k=50,p=1.5,estim="lpindex",br=TRUE) 
 
 # expectile
-extExpect.eva(tau=1-1/60000, train=data2$Y)
+extExpect.eva(tau=1-1/60000, train=data$Y)
 extExpect.eva(tau=1-1/60000, train=data3$Y) 
 
 # extremefit
-extremefit.eva(tau=1-1/60000, train=data2$Y) 
+extremefit.eva(tau=1-1/60000, train=data$Y) 
 extremefit.eva(tau=1-1/60000, train=data3$Y) 
 
+# refined Weibull
+estim.rw = estimate.rw(x=data$Y, tau=1-1/60000) ### estimate for RW
+estim.rweibull = estimate.rweibull(x=data$Y, tau=1-1/60000) ### estimate for weibull
+
+loss1 = calculate_loss1(predfunc=estimate.rw, tau0=1-1/60000, y=data$Y) ### loss for RW
+loss1.weibull = calculate_loss1(predfunc=estimate.rweibull, tau0=1-1/60000, y=data$Y)  ### loss for weibull 
 

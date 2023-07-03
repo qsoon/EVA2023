@@ -1,5 +1,6 @@
 library(evgam)
 
+# selected function forms
 f1 <- formula(train_y~V2+V3*Season+WindSpeed+Atmosphere)
 f2 <- formula(~ Season)
 f3 <- formula(excess~V2+V3*Season+WindSpeed+Atmosphere)

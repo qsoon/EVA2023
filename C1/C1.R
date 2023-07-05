@@ -1,5 +1,7 @@
 library(evgam)
 
+# For C1, we selected EVGAM model 
+
 # selected function forms
 f1 <- formula(train_y~V2+V3*Season+WindSpeed+Atmosphere)
 f2 <- formula(~ Season)

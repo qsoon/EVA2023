@@ -86,13 +86,13 @@ calculate_SCV2(wrap.fevd, tau0=1-1/60000, data3$Y, seed=1)
 
 
 # GPD (texmex)
-calculate_loss1(predfunc=wrap.fevd, tau0=1-1/60000, y=data$Y, seed=1)
-calculate_SCV1(wrap.fevd, tau0=1-1/60000, data$Y, seed=1) 
-calculate_SCV2(wrap.fevd, tau0=1-1/60000, data$Y, seed=1) 
+calculate_loss1(predfunc=wrap.evm, tau0=1-1/60000, y=data$Y, seed=1)
+calculate_SCV1(wrap.evm, tau0=1-1/60000, data$Y, seed=1) 
+calculate_SCV2(wrap.evm, tau0=1-1/60000, data$Y, seed=1) 
 
-calculate_loss1(predfunc=wrap.fevd, tau0=1-1/60000, y=data3$Y, seed=1)
-calculate_SCV1(wrap.fevd, tau0=1-1/60000, data3$Y, seed=1) 
-calculate_SCV2(wrap.fevd, tau0=1-1/60000, data3$Y, seed=1) 
+calculate_loss1(predfunc=wrap.evm, tau0=1-1/60000, y=data3$Y, seed=1)
+calculate_SCV1(wrap.evm, tau0=1-1/60000, data3$Y, seed=1) 
+calculate_SCV2(wrap.evm, tau0=1-1/60000, data3$Y, seed=1) 
 
 # refined Weissman
 calculate_loss1(predfunc=estimate.rw, tau0=1-1/60000, y=data$Y, seed=1) ### loss for RW

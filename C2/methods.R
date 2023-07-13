@@ -343,7 +343,7 @@ wrap.evm <- function(tau, data) {
   yw.diag = mev::W.diag(data, k=20, plots=NULL)
   sel.thresh = yw.diag$thresh
   
-  Yfit = evm(y, th=yw.diag$thresh)
+  Yfit = evm(data, th=yw.diag$thresh)
   M = as.integer(as.integer(1/(1-tau)))
   pred = predict(Yfit, M=M)
   return(pred$obj[[1]])

@@ -1,3 +1,12 @@
+library(caret)
+library(quantreg)
+library(mnormt)
+library(ks)
+library(evd)
+library(rdist)
+library(evmix)
+library(evgam)
+
 #################################################
 #  Kernel estimator of extreme cond. quantile   #
 #		for heavy tailed distributions 	#

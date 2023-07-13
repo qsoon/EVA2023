@@ -1,5 +1,4 @@
 library(caret)
-library(evmix)
 
 ## marginal quantile estimation (C2) ##
 

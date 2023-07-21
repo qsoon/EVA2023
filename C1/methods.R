@@ -6,6 +6,11 @@ library(evd)
 library(rdist)
 library(evmix)
 library(evgam)
+library(EXRQ)
+library(gbex)
+library(treeClust)
+library(POT)
+library(erf)
 
 #################################################
 #  Kernel estimator of extreme cond. quantile   #
@@ -359,4 +364,36 @@ evgam.eva <-function(tau,train_y, train_x, valid_x){
   form<-list(excess~ V1+V2+V3+V4+Season+WindDirection+WindSpeed+Atmosphere , ~ 1 )
   mod<-evgam(form, data=train, family="gpd")
   return(unlist(predict(mod,newdata=newdata,type="quantile",prob=.9999)[,1]+predict(ald, newdata = newdata)$location)) 
+}
+
+#############################################
+# Extreme quantile regression (Wang and Li) #
+#############################################
+wrap.TwoStage <- function(tau, y, x, newx) {
+  n = length(y)
+  k = as.integer(4.5*n^(1/3))
+  eqr.fit = TwoStage(y=y, x=x, xstar=newx, tau.e=tau, k=k)
+  res = eqr.fit$Q2Stage[,1]
+  res
+}
+
+################################
+# extremal random forest (ERF) #
+################################
+wrap.erf <- function(tau, y, x, newx, inter_q=0.8) {
+  erf.fit = erf(X=x, Y=y, intermediate_quantile = inter_q)
+  res = predict(erf.fit, newdata=newx, quantiles=tau)[,1]
+  res
+}
+
+##########################
+# gradient boosting (GB) #
+##########################
+wrap.gb <- function(tau, y, x, newx) {
+  gb.gpd.fit = gbex(y=y, X=x)
+  df = data.frame(newx)
+  names(df) = paste0("X.", 1:8)
+  gb.gpd.pred = predict(gb.gpd.fit, newdata=df, probs=tau, what="quant")
+  res = gb.gpd.pred[,1]
+  res
 }

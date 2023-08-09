@@ -2,9 +2,9 @@ library(texmex)
 library(matrixStats)
 library(igraph)
 
-source("texmex-funs.R")
-data1<-read.csv("../data/UtopulaU1.csv")
-data2<-read.csv("../data/UtopulaU2.csv")
+source("../texmex-funs.R")
+data1<-read.csv("../../data/UtopulaU1.csv")
+data2<-read.csv("../../data/UtopulaU2.csv")
 
 for (i in 1:25) {
   colnames(data1)[i] <- paste("1", colnames(data1)[i], sep="")

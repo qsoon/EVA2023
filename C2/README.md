@@ -1,4 +1,4 @@
-## C1
+## C2
 
 `C2.R` provides the code to address C2. \
 `methods.R` encompasses all the methods under consideration. \

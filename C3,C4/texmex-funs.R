@@ -1,4 +1,4 @@
-### functions modified for keef-et-al.R ###
+### override some functions in the `texmex` package ###
  
 ### Unif margin -> Laplace margin ###
 laplace.transform <- function(p) ifelse(p < 0.5, log(2 * p), -log(2 * (1 - p)))

@@ -1,5 +1,5 @@
 ### functions modified for keef-et-al.R ###
-
+ 
 ### Unif margin -> Laplace margin ###
 laplace.transform <- function(p) ifelse(p < 0.5, log(2 * p), -log(2 * (1 - p)))
 laplace.inv.cdf <- function(q) ifelse(q < 0, exp(q)/2, 1 - 0.5 * exp(-q))
@@ -128,7 +128,7 @@ assignInNamespace("mexTransform", mexTransform, "texmex")
       #                              qu = migpd$mqu[ -which ][ i ],
       #                              sigma=coxmi[ 1,i ], xi=coxmi[ 2,i ] )
       # }
-      #### 속도 늦추는 코드 삭제 (어차피 사용 안함)
+      #### lines commented above are unnecessary since we know the exact marginal distribution
       xmi <- apply(ymi,2,function(xx)-log(-log(laplace.inv.cdf(xx))))
       xi <- -log(-log(laplace.inv.cdf(y)))
       

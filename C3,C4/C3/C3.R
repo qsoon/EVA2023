@@ -1,8 +1,8 @@
 library(texmex)
 library(gridExtra)
-source("texmex-funs.R") # replace the marginal estimating part, as we know the exact marg. distn.
+source("../texmex-funs.R") # replace the marginal estimating part, as we know the exact marg. distn.
 
-c3 <- read.csv("data/Coputopia.csv")
+c3 <- read.csv("../../data/Coputopia.csv")
 c3slice6 <- list(c3[c3$Atmosphere <= quantile(c3$Atmosphere,0.2),],
                  c3[c3$Atmosphere > quantile(c3$Atmosphere,0.2) & c3$Atmosphere <= quantile(c3$Atmosphere,0.4),],
                  c3[c3$Atmosphere > quantile(c3$Atmosphere,0.4) & c3$Atmosphere <= quantile(c3$Atmosphere,0.6),],

@@ -75,7 +75,7 @@ us <- seq(0.7,0.99,by=0.01)
 par(mfrow=c(1,2))
 
 plot(us,res.i$`0~20%`,
-     type="l",xlab="u",ylab="Probability",main="C3: p1",ylim=c(0.0,0.0003),col=colors[1]) 
+     type="l",xlab="u",ylab="Probability",main="(a) C3: p1",ylim=c(0.0,0.0003),col=colors[1]) 
 lines(us,res.i$`20~40%`,col=colors[2])
 lines(us,res.i$`40~60%`,col=colors[3])
 lines(us,res.i$`60~80%`,col=colors[4])
@@ -88,7 +88,7 @@ lines(us,res.i$newcombine,lwd=3)  # combine 6 groups
 
 ### plot --- c3(ii)
 plot(us,res.ii$`0~20%`,
-     type="l",xlab="u",ylab="Probability",main="C3: p2",ylim=c(0.0,4e-5),col=colors[1])
+     type="l",xlab="u",ylab="Probability",main="(b) C3: p2",ylim=c(0.0,4e-5),col=colors[1])
 lines(us,res.ii$`20~40%`,col=colors[2])
 lines(us,res.ii$`40~60%`,col=colors[3])
 lines(us,res.ii$`60~80%`,col=colors[4])

@@ -16,24 +16,34 @@ for (i in 1:25) {
 data<-cbind(data1,data2)
 
 pearson <- cor(data, method = 'pearson')
+spearman <- cor(data, method = 'spearman')
 
-hist(abs(as.vector(pearson)[!abs(as.vector(pearson))==1]), main = "Pearson's rho", xlab = "rho")
+#hist(abs(as.vector(pearson)[!abs(as.vector(pearson))==1]), main = "Pearson's rho", xlab = "rho")
 
-pearsonedges <- (pearson>0.2)
+# get only elements above the main diagonal to avoid duplications
+hist(abs(as.vector(pearson))[which((1:2500)%%50>(1:2500)%/%50+1|((1:2500)%%50==0)&(1:2500)!=2500)], main = "Pearson's rho", xlab = "rho")
+hist(abs(as.vector(spearman))[which((1:2500)%%50>(1:2500)%/%50+1|((1:2500)%%50==0)&(1:2500)!=2500)], main = "Spearman's rho", xlab = "rho")
 
 pearsonedges <- c()
+spearmanedges <- c()
 
 for (i in 1:50) {
   for (j in 1:50) {
     if (pearson[i,j]>0.2 & i!=j) {
       pearsonedges <- c(pearsonedges,i,j)
     }
+    if (spearman[i,j]>0.2 & i!=j) {
+      spearmanedges <- c(spearmanedges,i,j)
+    }
   }
 }
 
 pearsongraph <- graph(pearsonedges, directed=FALSE)
+spearmangraph <- graph(spearmanedges, directed=FALSE)
 
 plot(pearsongraph,vertex.size=8)
+plot(spearmangraph,vertex.size=8)
+
 
 
 

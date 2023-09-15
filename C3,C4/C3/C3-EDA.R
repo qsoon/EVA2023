@@ -2,6 +2,7 @@
 
 library(texmex)
 library(gridExtra)
+library(latex2exp)
 
 c3 <- read.csv("../../data/Coputopia.csv")
 
@@ -9,9 +10,9 @@ c3 <- read.csv("../../data/Coputopia.csv")
 ### C3 in uniform margin space
 
 par(mfrow=c(1,3))
-plot(exp(-exp(-c3$Y1)),exp(-exp(-c3$Y2)),pch=".",main="(a) F(Y1) vs. F(Y2)",asp=1, xlab="F(Y1)",ylab="F(Y2)")
-plot(exp(-exp(-c3$Y1)),exp(-exp(-c3$Y3)),pch=".",main="(b) F(Y1) vs. F(Y3)",asp=1, xlab="F(Y1)",ylab="F(Y3)")
-plot(exp(-exp(-c3$Y2)),exp(-exp(-c3$Y3)),pch=".",main="(c) F(Y2) vs. F(Y3)",asp=1, xlab="F(Y2)",ylab="F(Y3)")
+plot(exp(-exp(-c3$Y1)),exp(-exp(-c3$Y2)),pch=".",main=TeX("(a) $italic(F(Y_1))$ vs. $italic(F(Y_2))$"),asp=1, xlab=TeX("$italic(F(Y_1))$"),ylab=TeX("$italic(F(Y_2))$"))
+plot(exp(-exp(-c3$Y1)),exp(-exp(-c3$Y3)),pch=".",main=TeX("(b) $italic(F(Y_1))$ vs. $italic(F(Y_3))$"),asp=1, xlab=TeX("$italic(F(Y_1))$"),ylab=TeX("$italic(F(Y_3))$"))
+plot(exp(-exp(-c3$Y2)),exp(-exp(-c3$Y3)),pch=".",main=TeX("(c) $italic(F(Y_2))$ vs. $italic(F(Y_3))$"),asp=1, xlab=TeX("$italic(F(Y_2))$"),ylab=TeX("$italic(F(Y_3))$"))
 
 
 ### Empirical and theoretic probability (under independence assumption)
@@ -19,7 +20,7 @@ plot(exp(-exp(-c3$Y2)),exp(-exp(-c3$Y3)),pch=".",main="(c) F(Y2) vs. F(Y3)",asp=
 par(mfrow=c(1,2))
 plot(seq(2,10,by=0.1),
      sapply(seq(2,10,by=0.1),\(r)mean(rowSums(c3[,c(3,4,5)]>r)==3)),type="l",
-     xlab="r",ylab="Probability",main="(a) P(Y1>r,Y2>r,Y3>r)",
+     xlab=TeX("$italic(r)$"),ylab="Probability",main=TeX("(a) $Pr(italic(Y_1>r,Y_2>r,Y_3>r))$"),
      xlim=c(2,10),ylim=c(0.0,0.01))
 lines(seq(2,10,by=0.1),
       sapply(seq(2,10,by=0.1),\(r)(1-exp(-exp(-r)))^3),
@@ -28,7 +29,7 @@ lines(seq(2,10,by=0.1),
 m <- -log(log(2))
 plot(seq(2,10,by=0.1),
      sapply(seq(2,10,by=0.1),\(r)mean(rowSums(c3[,c(3,4)]>r)==2 & c3[,5]<m)),type="l",
-     xlab="r",ylab="Probability",main="(b) P(Y1>r,Y2>r,Y3<m)",
+     xlab=TeX("$italic(r)$"),ylab="Probability",main=TeX("(b) $Pr(italic(Y_1>r,Y_2>r,Y_3<m))$"),
      xlim=c(2,10),ylim=c(0.0,0.01))
 lines(seq(2,10,by=0.1),
       sapply(seq(2,10,by=0.1),\(r)(1-exp(-exp(-r)))^2/2),
@@ -52,7 +53,7 @@ par(mfrow=c(1,2))
 #### P(Y1,Y2,Y3 > r): 6 slice
 plot(seq(-2,10,by=0.1),
      sapply(seq(-2,10,by=0.1),\(r)mean(rowSums(c3slice6[[1]][,c(3,4,5)]>r)==3)),type="l",
-     xlab="r",ylab="Empirical probability",main="(a) P(Y1>r,Y2>r,Y3>r)",
+     xlab=TeX("$italic(r)$"),ylab="Empirical probability",main=TeX("(a) $Pr(italic(Y_1>r,Y_2>r,Y_3>r))$"),
      xlim=c(1,10),ylim=c(0.0,0.1))
 for(i in 2:length(c3slice6)){
   lines(seq(-2,10,by=0.1),
@@ -68,7 +69,7 @@ legend("topright",legend=c("Atmosphere","0~20%","20~40%","40~60%","60~80%","80~9
 #### P(Y1>r,Y2>r,Y3>r)
 plot(seq(-2,10,by=0.1),
      sapply(seq(-2,10,by=0.1),\(r)mean(rowSums(c3[c3$Season=="S1",c(3,4,5)]>r)==3)),type="l",
-     xlab="r",ylab="Empirical probability",main="(b) P(Y1>r,Y2>r,Y3>r)",
+     xlab=TeX("$italic(r)$"),ylab="Empirical probability",main=TeX("(b) $Pr(italic(Y_1>r,Y_2>r,Y_3>r))$"),
      xlim=c(1,10),ylim=c(0.0,0.1))
 lines(seq(-2,10,by=0.1),
       sapply(seq(-2,10,by=0.1),\(r)mean(rowSums(c3[c3$Season=="S2",c(3,4,5)]>r)==3)), col="red")

@@ -101,6 +101,6 @@ lines(us,res.ii$`80~95%`,col=colors[5])
 lines(us,res.ii$`95~100%`,col=colors[6])
 lines(us,res.ii$newcombine,lwd=3,col="black")
 legend("topright",inset=c(-0.55,0),xpd=NA,bty="n",
-       legend=c("Atmosphere","0~20%","20~40%","40~60%","60~80%","80~95%","95~100%","weighted average"),
+       legend=c("Atmosphere","0~20% (g=1)","20~40% (g=2)","40~60% (g=3)","60~80% (g=4)","80~95% (g=5)","95~100% (g=6)","weighted average"),
        col=c("",colors[1:6],"black"),
        lty=c(0,rep(1,7)),lwd=c(0,rep(1,6),3))

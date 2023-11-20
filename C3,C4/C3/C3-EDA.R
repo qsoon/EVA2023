@@ -61,7 +61,7 @@ for(i in 2:length(c3slice6)){
         col=rep(colors,each=1)[i])
   Sys.sleep(0.1)
 }
-legend("topright",legend=c("Atmosphere","0~20%","20~40%","40~60%","60~80%","80~95%","95~100%"),
+legend("topright",legend=c("Atmosphere","0~20% (g=1)","20~40% (g=2)","40~60% (g=3)","60~80% (g=4)","80~95% (g=5)","95~100% (g=6)"),
        col=c("",colors[1:6]),lty=c(0,rep(1,6)),lwd=c(0,rep(2,6)))
 
 ################ Season ########################################################

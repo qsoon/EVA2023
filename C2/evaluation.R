@@ -123,16 +123,18 @@ calculate_SCV2 <- function(predfunc, tau0=1-1/60000, y, seed=1){
   l <- length(alpha_list)
   
   for(alpha in alpha_list){
-    tauc1 <- tau0 - alpha / n
-    nc <- n / (1 + alpha/n/(1-tau0))
-    k <- floor(n/nc)
+    # tauc1 <- tau0 - alpha / n
+    # nc <- n / (1 + alpha/n/(1-tau0))
+    # k <- floor(n/nc)
+    tauc <- tau0 - alpha / n
+    k <- floor(1 + n*(1-tau0)/alpha)
     
     if(k==1){
       l <- l-1
       next
     }
-    alpha2 <- n*(1-tau0)/(k-1)
-    tauc <- tau0 - alpha2/n
+    # alpha2 <- n*(1-tau0)/(k-1)
+    # tauc <- tau0 - alpha2/n
     
     scvsum <- 0
     set.seed(seed)
@@ -274,16 +276,18 @@ calculate_cond_SCV2 <- function(predfunc_cond, tau0=1-1/10000, y, X, seed=1){
   l <- length(alpha_list)
   
   for(alpha in alpha_list){
-    tauc1 <- tau0 - alpha / n
-    nc <- n / (1 + alpha/n/(1-tau0))
-    k <- floor(n/nc)
+    # tauc1 <- tau0 - alpha / n
+    # nc <- n / (1 + alpha/n/(1-tau0))
+    # k <- floor(n/nc)
+    tauc <- tau0 - alpha / n
+    k <- floor(1 + n*(1-tau0)/alpha)
     
     if(k==1){
       l <- l-1
       next
     }
-    alpha2 <- n*(1-tau0)/(k-1)
-    tauc <- tau0 - alpha2/n
+    # alpha2 <- n*(1-tau0)/(k-1)
+    # tauc <- tau0 - alpha2/n
     
     scvsum <- 0
     set.seed(seed)
@@ -314,16 +318,18 @@ calculate_cond_SCV2_kernel <- function(predfunc_cond, tau0=1-1/10000, y, X, dist
   l <- length(alpha_list)
   
   for(alpha in alpha_list){
-    tauc1 <- tau0 - alpha / n
-    nc <- n / (1 + alpha/n/(1-tau0))
-    k <- floor(n/nc)
+    # tauc1 <- tau0 - alpha / n
+    # nc <- n / (1 + alpha/n/(1-tau0))
+    # k <- floor(n/nc)
+    tauc <- tau0 - alpha / n
+    k <- floor(1 + n*(1-tau0)/alpha)
     
     if(k==1){
       l <- l-1
       next
     }
-    alpha2 <- n*(1-tau0)/(k-1)
-    tauc <- tau0 - alpha2/n
+    # alpha2 <- n*(1-tau0)/(k-1)
+    # tauc <- tau0 - alpha2/n
     
     scvsum <- 0
     set.seed(seed)

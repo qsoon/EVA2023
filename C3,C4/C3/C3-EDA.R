@@ -34,7 +34,7 @@ plot(seq(2,10,by=0.1),
 lines(seq(2,10,by=0.1),
       sapply(seq(2,10,by=0.1),\(r)(1-exp(-exp(-r)))^2/2),
       col="red")
-legend("topright",c("Empirical probability", "Independence model"),col=c("black","red"),lty=1)
+# legend("topright",c("Empirical probability", "Independence model"),col=c("black","red"),lty=1)
 
 ### EDA on the covariates
 ################ Atmosphere ####################################################
@@ -61,7 +61,7 @@ for(i in 2:length(c3slice6)){
         col=rep(colors,each=1)[i])
   Sys.sleep(0.1)
 }
-legend("topright",legend=c("Atmosphere","0~20% (g=1)","20~40% (g=2)","40~60% (g=3)","60~80% (g=4)","80~95% (g=5)","95~100% (g=6)"),
+legend("topright",legend=c("Atmosphere","Group 1","Group 2","Group 3","Group 4","Group 5","Group 6"),
        col=c("",colors[1:6]),lty=c(0,rep(1,6)),lwd=c(0,rep(2,6)))
 
 ################ Season ########################################################

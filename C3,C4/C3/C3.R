@@ -75,32 +75,35 @@ us <- seq(0.7,0.99,by=0.01)
 #### plot --- c3(i)
 par(mfrow=c(1,2),oma=c(0,0,0,9.5),mar=c(5,4,4,1)+0.1) 
 
-plot(us,res.i$`0~20%`,
+plot(us,res.i$`0~20%`*1e4,
      type="l",xlab=TeX("$italic(u)$"),
-     ylab="Probability",main=TeX("(a) $\\widehat{Pr}(italic(Y_1>6,Y_2>6,Y_3>6) | Atmosphere\\in O_g)$"),
-     ylim=c(0.0,0.0003),col=colors[1]) 
-lines(us,res.i$`20~40%`,col=colors[2])
-lines(us,res.i$`40~60%`,col=colors[3])
-lines(us,res.i$`60~80%`,col=colors[4])
-lines(us,res.i$`80~95%`,col=colors[5])
-lines(us,res.i$`95~100%`,col=colors[6])
-lines(us,res.i$newcombine,lwd=3)  # combine 6 groups
+     ylab="",main=TeX("(a) $\\widehat{Pr}(italic(Y_1>6,Y_2>6,Y_3>6) | Atmosphere\\in O_g)$"),
+     ylim=c(0, 4),col=colors[1]) 
+mtext(TeX("Probability ($10^{-4}$)"), side = 2, line = 2.7, outer=F)
+lines(us,res.i$`20~40%`*1e4,col=colors[2])
+lines(us,res.i$`40~60%`*1e4,col=colors[3])
+lines(us,res.i$`60~80%`*1e4,col=colors[4])
+lines(us,res.i$`80~95%`*1e4,col=colors[5])
+lines(us,res.i$`95~100%`*1e4,col=colors[6])
+lines(us,res.i$newcombine*1e4,lwd=3)  # combine 6 groups
 # legend("topleft",legend=c("Atmosphere","0~20%","20~40%","40~60%","60~80%","80~95%","95~100%","weighted average"),
 #        col=c("",colors[1:6],"black"),
 #        lty=c(0,rep(1,7)),lwd=c(0,rep(1,6),3))
 
 ### plot --- c3(ii)
-plot(us,res.ii$`0~20%`,
-     type="l",xlab=TeX("$italic(u)$"),ylab="Probability",
-     main=TeX("(a) $\\widehat{Pr}(italic(Y_1>7,Y_2>7,Y_3<m) | Atmosphere\\in O_g)$"),
-     ylim=c(0.0,4e-5),col=colors[1])
-lines(us,res.ii$`20~40%`,col=colors[2])
-lines(us,res.ii$`40~60%`,col=colors[3])
-lines(us,res.ii$`60~80%`,col=colors[4])
-lines(us,res.ii$`80~95%`,col=colors[5])
-lines(us,res.ii$`95~100%`,col=colors[6])
-lines(us,res.ii$newcombine,lwd=3,col="black")
+plot(us,res.ii$`0~20%`*1e5,
+     type="l",xlab=TeX("$italic(u)$"),ylab="",
+     main=TeX("(b) $\\widehat{Pr}(italic(Y_1>7,Y_2>7,Y_3<m) | Atmosphere\\in O_g)$"),
+     ylim=c(0,4),col=colors[1])
+mtext(TeX("Probability ($10^{-5}$)"), side = 2, line = 2.7, outer=F)
+lines(us,res.ii$`20~40%`*1e5,col=colors[2])
+lines(us,res.ii$`40~60%`*1e5,col=colors[3])
+lines(us,res.ii$`60~80%`*1e5,col=colors[4])
+lines(us,res.ii$`80~95%`*1e5,col=colors[5])
+lines(us,res.ii$`95~100%`*1e5,col=colors[6])
+lines(us,res.ii$newcombine*1e5,lwd=3,col="black")
 legend("topright",inset=c(-0.55,0),xpd=NA,bty="n",
-       legend=c("Atmosphere","0~20% (g=1)","20~40% (g=2)","40~60% (g=3)","60~80% (g=4)","80~95% (g=5)","95~100% (g=6)","weighted average"),
+       legend=c("Atmosphere","Group 1","Group 2","Group 3","Group 4","Group 5","Group 6","weighted average"),
        col=c("",colors[1:6],"black"),
        lty=c(0,rep(1,7)),lwd=c(0,rep(1,6),3))
+

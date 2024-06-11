@@ -1,5 +1,7 @@
 library(matrixStats)
 library(igraph)
+library(texmex)
+library(tidyverse)
 
 source("../texmex-funs.R")
 data1<-read.csv("../../data/UtopulaU1.csv")
@@ -23,6 +25,21 @@ spearman <- cor(data, method = 'spearman')
 hist(abs(as.vector(pearson))[which((1:2500)%%50>(1:2500)%/%50+1|((1:2500)%%50==0)&(1:2500)!=2500)], main = "Pearson's rho", xlab = "rho")
 hist(abs(as.vector(spearman))[which((1:2500)%%50>(1:2500)%/%50+1|((1:2500)%%50==0)&(1:2500)!=2500)], main = "Spearman's rho", xlab = "rho")
 
+utopula <- cbind(data1, data2)
+
+chi_pair<- matrix(0, nrow = 50, ncol = 50)
+for(i in 1:49){
+  for(j in (i+1):50){
+    chi_mat <- texmex::chi(cbind(utopula[,i], utopula[,j]))$chi
+    chi_pair[i,j] <- chi_mat[100,2]
+  }
+}
+
+chi_pair[upper.tri(chi_pair)] %>%
+  hist(main = "Extremal dependence")
+
+################################################################################
+
 pearsonedges <- c()
 spearmanedges <- c()
 
@@ -42,3 +59,7 @@ spearmangraph <- graph(spearmanedges, directed=FALSE)
 
 plot(pearsongraph,vertex.size=8)
 plot(spearmangraph,vertex.size=8)
+
+
+
+

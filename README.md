@@ -2,6 +2,8 @@
 
 This repo contains the source code for EVA 2023 Data Challenge.
 
+For the detail, please refer to our paper: [https://link.springer.com/article/10.1007/s10687-024-00497-x](https://link.springer.com/article/10.1007/s10687-024-00497-x).
+
 ## Team information
 
 - Team Name: SHSmultiscale
@@ -16,3 +18,6 @@ EVA 2023 Data Challenge consists of 4 sub-challenges, each of which deals with t
 - (C4) 50-dim joint probability prediction of exceedance events
 
 To access more detailed information about the challenge, please refer to the "instructions" folder.
+
+## References
+Kang, S., Kim, K., Kwon, Y., Park, S., Park, S., Shin, H.-Y., Kim, J. and Oh, H.-S. (2024+). Semiparametric approaches for the inference of univariate and multivariate extremes. Extremes.
